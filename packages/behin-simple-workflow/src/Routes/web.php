@@ -58,6 +58,8 @@ Route::name('simpleWorkflow.')->prefix('workflow')->middleware(['web', 'auth'])-
     Route::resource('scripts', ScriptController::class);
     Route::post('scripts/{id}/test', [ ScriptController::class, 'test' ])->name('scripts.test');
     Route::any('scripts/{id}/run', [ ScriptController::class, 'runFromView' ])->name('scripts.run');
+    Route::post('/scripts/autocomplete', [ScriptController::class, 'autocomplete'])->name('scripts.autocomplete');
+
 
     Route::resource('conditions', ConditionController::class);
     Route::post('conditions/{id}/test', [ ConditionController::class, 'runConditionForTest' ])->name('conditions.test');
