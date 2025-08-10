@@ -41,7 +41,7 @@ class ProcessController extends Controller
 
     public static function getAll(): object
     {
-        return Process::get();
+        return Process::orderBy('created_at','desc')->get();
     }
 
     public static function listOfProcessThatUserCanStart($userId = null):array
@@ -165,7 +165,6 @@ class ProcessController extends Controller
             $taskArr = $task->toArray();
             $taskArr['actors'] = $task->actors()->get()->toArray();
             $taskArr['jumps'] = $task->jumps()->get()->toArray();
-
             $executive = $task->executiveElement();
             if ($executive) {
                 switch ($task->type) {
@@ -178,7 +177,6 @@ class ProcessController extends Controller
                         break;
                 }
             }
-
             $data['tasks'][] = $taskArr;
         }
 
@@ -231,7 +229,6 @@ class ProcessController extends Controller
                         'actor' => $actor['actor'] ?? null,
                     ]);
                 }
-
                 if ($executive) {
                     switch ($task['type'] ?? null) {
                         case 'form':
@@ -300,7 +297,6 @@ class ProcessController extends Controller
                         ]);
                     }
                 }
-
                 if ($entry['condition'] && $entry['condition_next_old'] && isset($tasksMap[$entry['condition_next_old']])) {
                     $entry['condition']->next_if_true = $tasksMap[$entry['condition_next_old']]['model']->id;
                     $entry['condition']->save();

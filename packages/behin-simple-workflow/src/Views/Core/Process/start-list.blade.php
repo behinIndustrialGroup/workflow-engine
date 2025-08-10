@@ -14,7 +14,7 @@
                 @foreach ($processes as $process)
                     <a href="{{ route('simpleWorkflow.process.start', [
                         'taskId' => $process->task->id,
-                        'inDraft' => 0,
+                        'inDraft' => true,
                         'force' => 0,
                         'redirect' => true,
                         ]) }}"
