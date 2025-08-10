@@ -23,6 +23,10 @@ Route::name('simpleWorkflow.')->prefix('workflow')->middleware(['web', 'auth'])-
         Route::get('start-list', [ ProcessController::class, 'startListView' ])->name('startListView');
         Route::get('start/{taskId}/{force?}/{redirect?}/{inDraft}', [ ProcessController::class, 'start' ])->name('start');
         Route::get('check-error/{processId}', [ ProcessController::class, 'processHasError' ])->name('processHasError');
+        Route::get('{processId}/export-view', [ ProcessController::class, 'exportView' ])->name('exportView');
+        Route::get('import-view', [ ProcessController::class, 'importView' ])->name('importView');
+        Route::get('{processId}/export', [ ProcessController::class, 'export' ])->name('export');
+        Route::post('import', [ ProcessController::class, 'import' ])->name('import');
     });
 
     Route::name('task.')->prefix('task')->group(function(){
