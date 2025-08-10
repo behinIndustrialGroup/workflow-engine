@@ -127,7 +127,7 @@ class ScriptController extends Controller
 
     private static function loadContent(Script $script)
     {
-        $executiveClass = "Behin\\SimpleWorkflow\\Controllers\\Scripts\\" . $script->executive_file;
+        $executiveClass = "Behin\\SimpleWorkflow\\Controllers\\Scripts\\" . $script->executive_file . '.php';
 
         if (!$script->content && $script->executive_file) {
             $filePath = base_path('packages/behin-simple-workflow/src/Controllers/Scripts/' . $script->executive_file . '.php');
