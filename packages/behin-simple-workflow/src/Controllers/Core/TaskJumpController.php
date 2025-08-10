@@ -8,7 +8,7 @@ use Behin\SimpleWorkflow\Models\Core\Task;
 use Behin\SimpleWorkflow\Models\Core\TaskJump;
 use Behin\SimpleWorkflow\Controllers\Core\InboxController;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Log;
 class TaskJumpController extends Controller
 {
     public function getTaskJumps($task_id)
@@ -19,8 +19,12 @@ class TaskJumpController extends Controller
     public function show($task_id , $inbox_id , $case_id , $process_id)
     {
         $task = TaskController::getById($task_id);
-        $previousInboxes = InboxController::getPreviousInboxes($case_id, $inbox_id, 5);
-        return view('SimpleWorkflowView::Core.TaskJump.jump-modal', compact('task' , 'inbox_id' , 'case_id' , 'process_id', 'previousInboxes'));
+        $case = CaseController::getById($case_id);
+        if($task->number_of_task_to_back > 0){
+            $previousInboxes = InboxController::caseHistoryListBefore($case->number, $inbox_id, $task->number_of_task_to_back);
+            return view('SimpleWorkflowView::Core.TaskJump.jump-modal', compact('task' , 'inbox_id' , 'case_id' , 'process_id', 'previousInboxes'));
+        }
+        return view('SimpleWorkflowView::Core.TaskJump.jump-modal', compact('task' , 'inbox_id' , 'case_id' , 'process_id'));
     }
 
     public function store(Request $request)

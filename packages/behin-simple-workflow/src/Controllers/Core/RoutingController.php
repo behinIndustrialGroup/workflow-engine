@@ -205,21 +205,13 @@ class RoutingController extends Controller
                 InboxController::changeStatusByInboxId($inbox->id, 'done');
             }
         }
+        $previousInbox->status = 'new';
+        $previousInbox->save();
 
-        $newInbox = InboxController::create($previousInbox->task_id, $caseId, $previousInbox->actor, 'new');
-
-        if ($newInbox->actor == Auth::id()) {
-            return response()->json([
-                'status' => 200,
-                'msg' => trans('Saved'),
-                'url' => route('simpleWorkflow.inbox.view', ['inboxId' => $newInbox->id])
-            ]);
+        if($previousInbox->actor == Auth::id()){
+            return redirect()->route('simpleWorkflow.inbox.view', ['inboxId' => $previousInbox->id]);
         }
-
-        return response()->json([
-            'status' => 200,
-            'msg' => trans('Saved')
-        ]);
+        return redirect()->route('simpleWorkflow.inbox.index');
     }
 
     public static function jumpTo(Request $request)
