@@ -19,6 +19,8 @@ return array (
   'case_number' => 'شماره پرونده',
   'Save' => 'ذخیره',
   'Save and next' => 'ذخیره و مرحله بعد',
+  'Back to previous step' => 'بازگشت به مرحله قبل',
+  'Previous Task Not Found' => 'تسک قبلی یافت نشد',
   'Created At' => 'ایجاد شده در',
   'Creator' => 'ایجاد کننده',
   'Case Number' => 'شماره پرونده',

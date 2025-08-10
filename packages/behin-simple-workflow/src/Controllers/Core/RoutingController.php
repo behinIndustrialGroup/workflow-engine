@@ -163,6 +163,65 @@ class RoutingController extends Controller
         ]);
     }
 
+    public static function jumpBack(Request $request)
+    {
+        $caseId = $request->caseId;
+        $inbox = InboxController::getById($request->inboxId);
+        $previousInbox = InboxController::getById($request->previous_inbox_id);
+
+        if (!$previousInbox) {
+            return response()->json([
+                'status' => 400,
+                'msg' => trans('fields.Previous Task Not Found')
+            ]);
+        }
+
+        if (in_array($inbox->status, ['done', 'doneByOther'])) {
+            return response()->json([
+                'status' => 400,
+                'msg' => trans('fields.Task Has Been Done Previously')
+            ]);
+        }
+
+        $task = $inbox->task;
+        $form = $task->executiveElement();
+        $requiredFields = FormController::requiredFields($form->id);
+        $result = self::save($request, $requiredFields);
+        if ($result['status'] != 200) {
+            return $result;
+        }
+
+        if ($task->type == 'form') {
+            if ($task->assignment_type == 'normal') {
+                $inboxes = InboxController::getAllByTaskIdAndCaseId($task->id, $caseId);
+                foreach ($inboxes as $row) {
+                    InboxController::changeStatusByInboxId($row->id, 'done');
+                }
+            }
+            if ($task->assignment_type == 'dynamic') {
+                InboxController::changeStatusByInboxId($request->inboxId, 'done');
+            }
+            if ($task->assignment_type == 'parallel') {
+                InboxController::changeStatusByInboxId($inbox->id, 'done');
+            }
+        }
+
+        $newInbox = InboxController::create($previousInbox->task_id, $caseId, $previousInbox->actor, 'new');
+
+        if ($newInbox->actor == Auth::id()) {
+            return response()->json([
+                'status' => 200,
+                'msg' => trans('Saved'),
+                'url' => route('simpleWorkflow.inbox.view', ['inboxId' => $newInbox->id])
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'msg' => trans('Saved')
+        ]);
+    }
+
     public static function jumpTo(Request $request)
     {
         $caseId = $request->caseId;

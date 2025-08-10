@@ -11,4 +11,17 @@
             <button class="btn btn-default col-sm-12">{{ $jump->nextTask->name }}</button>
         </form>
     @endforeach
+    @if(isset($previousInboxes) && $previousInboxes->count())
+        <hr>
+        <h4 class="text-center">{{ trans('fields.Back to previous step') }}</h4>
+        @foreach ($previousInboxes as $prev)
+            <form action="{{ route('simpleWorkflow.routing.jumpBack') }}" class="m-1" method="POST">
+                @csrf
+                <input type="hidden" name="inboxId" value="{{ $inbox_id }}">
+                <input type="hidden" name="caseId" value="{{ $case_id }}">
+                <input type="hidden" name="previous_inbox_id" value="{{ $prev->id }}">
+                <button class="btn btn-default col-sm-12">{{ $prev->task->name }}</button>
+            </form>
+        @endforeach
+    @endif
 </div>

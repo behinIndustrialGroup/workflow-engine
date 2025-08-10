@@ -77,6 +77,16 @@ class InboxController extends Controller
         $inboxRow->save();
     }
 
+    public static function getPreviousInboxes($caseId, $currentInboxId, $limit = 5)
+    {
+        return Inbox::where('case_id', $caseId)
+            ->where('id', '!=', $currentInboxId)
+            ->whereIn('status', ['done', 'doneByOther'])
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
     public function index(): View
     {
         $rows = self::getUserInbox(Auth::id());
