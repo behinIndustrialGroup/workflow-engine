@@ -62,10 +62,8 @@ class EntityController extends Controller
             $type = $details[1] ?? '';
             if (Str::startsWith($type, 'entity:')) {
                 $table = substr($type, 7);
-                $class = Str::studly(Str::singular($table));
-                $uses .= " use Behin\\SimpleWorkflow\\Models\\Entities\\$class;";
                 $method = Str::camel(str_replace(['_id'], '', $name));
-                $relations .= "\n    public function $method()\n    {\n        return \$this->belongsTo($class::class, '$name');\n    }\n";
+                $relations .= "\n    public function $method()\n    {\n        return \$this->belongsTo('$table', '$name');\n    }\n";
             }
         }
         $classContents .= $relations;
