@@ -50,6 +50,11 @@ class EntityController extends Controller
         $defaultUses = "use Behin\\SimpleWorkflow\\Controllers\\Core\\VariableController; use Illuminate\\Database\\Eloquent\\Factories\\HasFactory; use Illuminate\\Database\\Eloquent\\Model; use Illuminate\\Support\\Str; use Illuminate\\Database\\Eloquent\\SoftDeletes;";
         $uses = $request->uses ?? $defaultUses;
         $classContents = $request->class_contents ?? '';
+        $classContents = preg_replace(
+            "/\r?\n\s*public function \w+\(\)\s*\r?\n\s*{\s*\r?\n\s*return \\$this->belongsTo\([^;]+;\s*\r?\n\s*}\s*/",
+            "\n",
+            $classContents
+        );
 
         $relations = '';
         $columnsLines = preg_split('/\r\n|\n|\r/', trim($request->columns));
