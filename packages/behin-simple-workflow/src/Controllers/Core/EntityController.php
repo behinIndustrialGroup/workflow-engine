@@ -50,11 +50,11 @@ class EntityController extends Controller
         $defaultUses = "use Behin\\SimpleWorkflow\\Controllers\\Core\\VariableController; use Illuminate\\Database\\Eloquent\\Factories\\HasFactory; use Illuminate\\Database\\Eloquent\\Model; use Illuminate\\Support\\Str; use Illuminate\\Database\\Eloquent\\SoftDeletes;";
         $uses = $request->uses ?? $defaultUses;
         $classContents = $request->class_contents ?? '';
-        $classContents = preg_replace(
-            "/\r?\n\s*public function \w+\(\)\s*\r?\n\s*{\s*\r?\n\s*return \\$this->belongsTo\([^;]+;\s*\r?\n\s*}\s*/",
-            "\n",
-            $classContents
-        );
+        // $classContents = preg_replace(
+        //     "/\r?\n\s*public function \w+\(\)\s*\r?\n\s*{\s*\r?\n\s*return \\$this->belongsTo\([^;]+;\s*\r?\n\s*}\s*/",
+        //     "\n",
+        //     $classContents
+        // );
 
         $relations = '';
         $columnsLines = preg_split('/\r\n|\n|\r/', trim($request->columns));
@@ -67,8 +67,10 @@ class EntityController extends Controller
             $type = $details[1] ?? '';
             if (Str::startsWith($type, 'entity:')) {
                 $table = substr($type, 7);
+                $class = Str::studly(Str::singular($table));
+                $uses .= " use Behin\\SimpleWorkflow\\Models\\Entities\\$class;";
                 $method = Str::camel(str_replace(['_id'], '', $name));
-                $relations .= "\n    public function $method()\n    {\n        return \$this->belongsTo('$table', '$name');\n    }\n";
+                $relations .= "\n    public function $method()\n    {\n        return DB::table('$table')->where('id', \$this->$name)->first();\n    }\n";
             }
         }
         $classContents .= $relations;
@@ -200,8 +202,8 @@ class EntityController extends Controller
         }
         $entityFileContent .= " 'created_by', 'updated_by', 'contributers', ";
         $entityFileContent .= "]; \n";
+        $entityFileContent .= "protected static function boot()\n        {\n            parent::boot();\n\n            static::creating(function (\$model) {\n                \$model->id = \$model->id ?? substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'), 0, 10);\n            });\n        }\n";
 
-        $entityFileContent .= "protected static function boot()\n        {\n            parent::boot();\n\n            static::creating(function (\\$model) {\n                \\$model->id = \\$model->id ?? substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'), 0, 10);\n            });\n        }\n";
         $entityFileContent .= $entity->class_contents;
         $entityFileContent .= "}";
         file_put_contents($entityFile, $entityFileContent);
