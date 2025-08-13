@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('wf_task_actor', function (Blueprint $table) {
+            $table->string('actor')->nullable()->change();
             $table->unsignedBigInteger('role_id')->nullable()->after('actor');
             $table->foreign('role_id')->references('id')->on('behin_roles');
         });
@@ -25,6 +26,7 @@ return new class extends Migration
         Schema::table('wf_task_actor', function (Blueprint $table) {
             $table->dropForeign(['role_id']);
             $table->dropColumn('role_id');
+            $table->string('actor')->change();
         });
     }
 };
