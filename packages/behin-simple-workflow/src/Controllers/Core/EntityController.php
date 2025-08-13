@@ -46,6 +46,14 @@ class EntityController extends Controller
         $defaultUses = "use Behin\\SimpleWorkflow\\Controllers\\Core\\VariableController; use Illuminate\\Database\\Eloquent\\Factories\\HasFactory; use Illuminate\\Database\\Eloquent\\Model; use Illuminate\\Support\\Str; use Illuminate\\Database\\Eloquent\\SoftDeletes;";
         $uses = $request->uses ?? $defaultUses;
         $classContents = $request->class_contents ?? '';
+<<<<<<< Updated upstream
+=======
+        // $classContents = preg_replace(
+        //     "/\r?\n\s*public function \w+\(\)\s*\r?\n\s*{\s*\r?\n\s*return \\$this->belongsTo\([^;]+;\s*\r?\n\s*}\s*/",
+        //     "\n",
+        //     $classContents
+        // );
+>>>>>>> Stashed changes
 
         $relations = '';
         $columnsLines = preg_split('/\r\n|\n|\r/', trim($request->columns));
@@ -61,7 +69,11 @@ class EntityController extends Controller
                 $class = Str::studly(Str::singular($table));
                 $uses .= " use Behin\\SimpleWorkflow\\Models\\Entities\\$class;";
                 $method = Str::camel(str_replace(['_id'], '', $name));
+<<<<<<< Updated upstream
                 $relations .= "\n    public function $method()\n    {\n        return \$this->belongsTo($class::class, '$name');\n    }\n";
+=======
+                $relations .= "\n    public function $method()\n    {\n        return DB::table('$table')->where('id', \$this->$name)->first();\n    }\n";
+>>>>>>> Stashed changes
             }
         }
         $classContents .= $relations;
