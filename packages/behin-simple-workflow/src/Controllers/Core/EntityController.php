@@ -69,11 +69,7 @@ class EntityController extends Controller
                 $class = Str::studly(Str::singular($table));
                 $uses .= " use Behin\\SimpleWorkflow\\Models\\Entities\\$class;";
                 $method = Str::camel(str_replace(['_id'], '', $name));
-<<<<<<< Updated upstream
-                $relations .= "\n    public function $method()\n    {\n        return \$this->belongsTo($class::class, '$name');\n    }\n";
-=======
                 $relations .= "\n    public function $method()\n    {\n        return DB::table('$table')->where('id', \$this->$name)->first();\n    }\n";
->>>>>>> Stashed changes
             }
         }
         $classContents .= $relations;
