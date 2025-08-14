@@ -293,5 +293,11 @@
 @section('script')
     <script>
         initial_view();
+        if (window.parent !== window) {
+            const success = document.querySelector('.alert-success');
+            if (success) {
+                window.parent.postMessage('task-updated', '*');
+            }
+        }
     </script>
 @endsection
