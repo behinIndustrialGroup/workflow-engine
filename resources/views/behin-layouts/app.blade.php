@@ -2,6 +2,11 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
+    @php
+        $profile = \UserProfile\Models\UserProfile::where('user_id', auth()->id())->first();
+        $headerColor = $profile->header_background ?? '#1976d2';
+        $sidebarColor = $profile->sidebar_background ?? '#212121';
+    @endphp
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -83,12 +88,12 @@
         }
 
         .main-header.navbar {
-            background-color: #1976d2 !important;
+            background-color: {{ $headerColor }} !important;
         }
 
         .main-sidebar {
             border-top-right-radius: 12px;
-            background-color: #212121 !important;
+            background-color: {{ $sidebarColor }} !important;
         }
 
         .main-footer {
@@ -164,9 +169,9 @@
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
 
-        @include('behin-layouts.header')
+        @include('behin-layouts.header', ['headerColor' => $headerColor])
 
-        @include('behin-layouts.main-sidebar')
+        @include('behin-layouts.main-sidebar', ['sidebarColor' => $sidebarColor])
         <div class="content-wrapper">
             <section class="content">
                 <div class="container-fluid">

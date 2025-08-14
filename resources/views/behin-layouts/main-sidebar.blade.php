@@ -1,4 +1,4 @@
-<aside class="main-sidebar elevation-4" style="background: #263238; color: #fff; min-height: 100vh;">
+<aside class="main-sidebar elevation-4" style="background: {{ $sidebarColor ?? '#263238' }}; color: #fff; min-height: 100vh;">
 
     <!-- User Profile -->
     <div class="sidebar p-3" style="direction: ltr;">

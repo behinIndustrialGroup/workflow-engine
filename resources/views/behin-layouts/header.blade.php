@@ -2,7 +2,7 @@
 use App\CustomClasses\Access;
 ?>
 <!-- Navbar -->
-<nav class="main-header navbar navbar-expand" style="background-color: #263238; color: #fff; border-bottom: none;">
+<nav class="main-header navbar navbar-expand" style="background-color: {{ $headerColor ?? '#263238' }}; color: #fff; border-bottom: none;">
 
     <!-- Left navbar links -->
     <ul class="navbar-nav align-items-center">
