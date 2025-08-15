@@ -39,6 +39,10 @@
                                                 <i class="fas fa-pencil-alt"></i>
                                                 {{ trans('Edit') }}
                                             </a>
+                                            <a class="btn btn-secondary btn-sm" href="{{ route('simpleWorkflow.process.edit', $value->id) }}">
+                                                <i class="fas fa-edit"></i>
+                                                {{ trans('Edit Process') }}
+                                            </a>
                                             <a class="btn btn-info btn-sm" href="{{ route('simpleWorkflow.process.exportView', $value->id) }}">
                                                 <i class="fas fa-file-export"></i>
                                                 {{ trans('Export') }}
