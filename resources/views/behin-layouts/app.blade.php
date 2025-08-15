@@ -336,7 +336,7 @@
                 $cell.html(`
             <span class="short-text">${shortText}</span>
             <span class="full-text" style="display:none;">${originalHtml}</span>
-            <button class="toggle-btn show-more-btn material-icons" style="border:none;background:none;cursor:pointer;">more_horiz</button>
+            <span class="toggle-btn show-more-btn material-icons" style="border:none;background:none;cursor:pointer;">more_horiz</span>
         `);
             }
         });

@@ -96,6 +96,8 @@ Route::name('simpleWorkflow.')->prefix('workflow')->middleware(['web', 'auth'])-
 
 
     Route::resource('entities', EntityController::class);
+    Route::post('entities/export', [EntityController::class, 'export'])->name('entities.export');
+    Route::post('entities/import', [EntityController::class, 'import'])->name('entities.import');
     Route::get('entities/{entity}/create-table', [EntityController::class, 'createTable'])->name('entities.createTable');
 
     Route::resource('task-jump', TaskJumpController::class);
