@@ -10,6 +10,18 @@ use Behin\TelegramBot\Models\TelegramMessage;
 
 class TelegramController extends Controller
 {
+    public function bots()
+    {
+        $bots = TelegramBot::all();
+        return view('TelegramBotViews::bots.index', compact('bots'));
+    }
+
+    public function messagesView(TelegramBot $bot)
+    {
+        return view('TelegramBotViews::messages.index', compact('bot'));
+    }
+
+
     public function storeBot(Request $request)
     {
         $bot = TelegramBot::create($request->only('name', 'token'));
