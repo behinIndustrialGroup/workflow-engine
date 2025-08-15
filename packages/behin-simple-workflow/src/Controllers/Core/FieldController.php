@@ -5,6 +5,7 @@ namespace Behin\SimpleWorkflow\Controllers\Core;
 use App\Http\Controllers\Controller;
 use Behin\SimpleWorkflow\Models\Core\Fields;
 use Behin\SimpleWorkflow\Models\Core\ViewModel;
+use Behin\SimpleWorkflow\Models\Core\Form;
 use Behin\SimpleWorkflow\Controllers\Core\FormController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -17,12 +18,7 @@ class FieldController extends Controller
         $forms = FormController::getAll();
         foreach ($fields as $field) {
             $field->forms = [];
-            foreach ($forms as $form) {
-                $formFields = FormController::getFormFields($form->id);
-                if (in_array($field->name, $formFields)) {
-                    $field->forms[] = $form->name;
-                }
-            }
+            $field->forms = Form::where('content', 'like', '%' . $field->name . '%')->get()->pluck('name')->toArray();
         }
         return view('SimpleWorkflowView::Core.Field.index', compact('fields'));
     }
@@ -112,6 +108,7 @@ class FieldController extends Controller
         }
         $fields = Fields::whereIn('id', $ids)->get();
         $fileName = 'fields-' . date('Ymd_His') . '.json';
+
         if ($fields->count() === 1) {
             $content = $fields->first()->toJson(JSON_PRETTY_PRINT);
         } else {
