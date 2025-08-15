@@ -90,6 +90,8 @@ return array (
   'Edit' => 'ویرایش',
   'Edit Records' => 'ویرایش رکوردها',
   'Edit Record' => 'ویرایش رکورد',
+  'Add Record' => 'افزودن رکورد',
+  'Create Record' => 'ایجاد رکورد',
   'Delete' => 'حذف',
   'customer_nid' => 'کدملی مشتری',
   'admision_date' => 'تاریخ پذیرش',
