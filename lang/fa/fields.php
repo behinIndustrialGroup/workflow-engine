@@ -83,6 +83,7 @@ return array (
   'New' => 'جدید',
   'Create' => 'ایجاد',
   'Type' => 'نوع',
+  'Forms' => 'فرم ها',
   'Name' => 'نام',
   'Edit' => 'ویرایش',
   'Delete' => 'حذف',

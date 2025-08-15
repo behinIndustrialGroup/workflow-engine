@@ -77,6 +77,7 @@
                         <th class="text-left">{{ trans('fields.Name') }}</th>
                         <th class="text-left">{{ trans('fields.Name') }}</th>
                         <th class="text-left">{{ trans('fields.Type') }}</th>
+                        <th class="text-left">{{ trans('fields.Forms') }}</th>
                         <th>{{ trans('fields.Actions') }}</th>
                     </tr>
                 </thead>
@@ -91,6 +92,13 @@
                             <td class="text-left">{{ trans("fields.".$field->name) }}</td>
                             <td class="text-left">{{ $field->name }}</td>
                             <td class="text-left">{{ $field->type }}</td>
+                            <td class="text-left">
+                                @if (!empty($field->forms))
+                                    {{ implode(', ', $field->forms) }}
+                                @else
+                                    -
+                                @endif
+                            </td>
 
                             <td>
                                 <a href="{{ route('simpleWorkflow.fields.edit', $field->id) }}" class="btn btn-default">{{ trans('fields.Edit') }}</a>
