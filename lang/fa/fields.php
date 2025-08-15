@@ -88,6 +88,8 @@ return array (
   'Forms' => 'فرم ها',
   'Name' => 'نام',
   'Edit' => 'ویرایش',
+  'Edit Records' => 'ویرایش رکوردها',
+  'Edit Record' => 'ویرایش رکورد',
   'Delete' => 'حذف',
   'customer_nid' => 'کدملی مشتری',
   'admision_date' => 'تاریخ پذیرش',

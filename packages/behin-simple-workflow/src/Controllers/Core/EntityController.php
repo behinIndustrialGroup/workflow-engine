@@ -267,4 +267,49 @@ class EntityController extends Controller
         echo "Entity class " . ucfirst($entity->name) . " created successfully.";
         return redirect()->back();
     }
+
+    public function records(Entity $entity)
+    {
+        if (!$entity->db_table_name || !Schema::hasTable($entity->db_table_name)) {
+            return redirect()->back()->with('error', 'Entity table not found.');
+        }
+        $records = DB::table($entity->db_table_name)->get();
+        $columns = $this->getColumnNames($entity);
+        return view('SimpleWorkflowView::Core.Entity.records', compact('entity', 'records', 'columns'));
+    }
+
+    public function editRecord(Entity $entity, $id)
+    {
+        if (!$entity->db_table_name || !Schema::hasTable($entity->db_table_name)) {
+            return redirect()->back()->with('error', 'Entity table not found.');
+        }
+        $record = DB::table($entity->db_table_name)->where('id', $id)->first();
+        $columns = $this->getColumnNames($entity);
+        return view('SimpleWorkflowView::Core.Entity.edit-record', compact('entity', 'record', 'columns'));
+    }
+
+    public function updateRecord(Request $request, Entity $entity, $id)
+    {
+        if (!$entity->db_table_name || !Schema::hasTable($entity->db_table_name)) {
+            return redirect()->back()->with('error', 'Entity table not found.');
+        }
+        $columns = $this->getColumnNames($entity);
+        $data = $request->only($columns);
+        DB::table($entity->db_table_name)->where('id', $id)->update($data);
+        return redirect()->route('simpleWorkflow.entities.records', $entity->id)->with('success', 'Record updated successfully.');
+    }
+
+    private function getColumnNames(Entity $entity)
+    {
+        $columnsLines = preg_split('/\r\n|\n|\r/', trim($entity->columns));
+        $names = [];
+        foreach ($columnsLines as $line) {
+            if (!$line) {
+                continue;
+            }
+            $details = explode(',', $line);
+            $names[] = $details[0];
+        }
+        return $names;
+    }
 }
