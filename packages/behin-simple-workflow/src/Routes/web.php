@@ -34,6 +34,7 @@ Route::name('simpleWorkflow.')->prefix('workflow')->middleware(['web', 'auth'])-
         Route::post('create', [ TaskController::class, 'create' ])->name('create');
         Route::get('{task}/edit', [ TaskController::class, 'edit' ])->name('edit');
         Route::put('{task}/update', [ TaskController::class, 'update' ])->name('update');
+        Route::delete('{task}/delete', [ TaskController::class, 'destroy' ])->name('delete');
 
         Route::get('actor/{taskId}', [ TaskController::class, 'index' ])->name('actor');
 

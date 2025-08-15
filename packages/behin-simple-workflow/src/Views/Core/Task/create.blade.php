@@ -178,9 +178,8 @@
             const link = e.target.closest('.task-edit-link');
             if(link){
                 e.preventDefault();
-                const iframe = document.getElementById('taskModalIframe');
-                iframe.src = link.getAttribute('href');
-                $('#taskModal').modal('show');
+                var url = link.getAttribute('href');
+                open_admin_modal(url);
             }
         });
 
