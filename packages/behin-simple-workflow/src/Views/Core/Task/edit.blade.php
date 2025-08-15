@@ -288,6 +288,25 @@
             <button type="submit" class="btn btn-primary" style="float: left">{{ trans('Edit') }}</button>
         </form>
     </div>
+    <div class="card shadow-sm mt-4">
+        <form action="{{ route('simpleWorkflow.task.delete', $task->id) }}" method="POST" onsubmit="return confirm('{{ trans('Are you sure?') }}')">
+            @csrf
+            @method('DELETE')
+            <div class="card-body row g-3">
+                <div class="col-md-6">
+                    <label for="transfer_task_id" class="form-label">{{ trans('fields.Transfer cases to task') }}</label>
+                    <select name="transfer_task_id" id="transfer_task_id" class="form-control select2">
+                        @foreach ($task->process->tasks()->where('id', '!=', $task->id) as $item)
+                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="card-footer text-start">
+                <button type="submit" class="btn btn-danger">{{ trans('Delete') }}</button>
+            </div>
+        </form>
+    </div>
 @endsection
 
 @section('script')
