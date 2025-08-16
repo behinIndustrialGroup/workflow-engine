@@ -44,6 +44,7 @@ Route::name('simpleWorkflowReport.')->prefix('workflow-report')->middleware(['we
     Route::resource('counter-party', CounterPartyController::class);
     Route::resource('phonebook', PhonebookController::class)->except(['show']);
 
+
     Route::name('fin.')->prefix('fin')->group(function(){
         Route::get('', [FinReportController::class, 'index'])->name('index');
         Route::get('total-cost', [FinReportController::class, 'totalCost'])->name('totalCost');

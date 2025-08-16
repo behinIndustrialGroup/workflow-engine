@@ -6,8 +6,10 @@
 
 @section('content')
     {{-- ACE Editor --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.13.1/ace.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.23.0/mode-php.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.23.0/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.23.0/ext-language_tools.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.23.0/mode-javascript.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.23.0/mode-css.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.23.0/theme-monokai.js"></script>
 
     {{-- Back Button --}}
@@ -54,7 +56,7 @@
                         <label for="type" class="form-label">{{ trans('Type') }}</label>
                         <select name="type" id="type" class="form-select">
                             @foreach ([
-                                'string', 'number', 'formatted-digit', 'text', 'date', 'time',
+                                'string', 'number', 'formatted-digit', 'text', 'date', 'time', 'datetime',
                                 'select', 'select-multiple', 'file', 'checkbox', 'radio',
                                 'location', 'signature', 'entity', 'title', 'div', 'button',
                                 'help', 'hidden', 'view-model'
@@ -114,8 +116,26 @@
 
                         {{-- Style --}}
                         <div class="mb-3">
-                            <label for="style" class="form-label">Style</label>
-                            <textarea name="style" id="style" class="form-control" rows="4" dir="ltr">{{ $attributes->style ?? '' }}</textarea>
+                            <label for="style-editor" class="form-label">Style</label>
+                            <div id="style-editor" style="height: 200px; width: 100%; font-size: 16px;">{{ $attributes->style ?? '' }}</div>
+                            <textarea name="style" id="style" class="d-none" dir="ltr">{{ $attributes->style ?? '' }}</textarea>
+
+                            <script>
+                                const styleEditor = ace.edit("style-editor");
+                                styleEditor.setTheme("ace/theme/monokai");
+                                styleEditor.session.setMode("ace/mode/css");
+                                ace.require("ace/ext/language_tools");
+                                styleEditor.setOptions({
+                                    enableBasicAutocompletion: true,
+                                    enableLiveAutocompletion: true,
+                                    enableSnippets: true,
+                                    wrap: true,
+                                });
+                                styleEditor.getSession().setUseWorker(false);
+                                styleEditor.session.on('change', function () {
+                                    document.getElementById('style').value = styleEditor.getValue();
+                                });
+                            </script>
                         </div>
 
                         {{-- Is Price --}}
@@ -139,8 +159,14 @@
                                 const editor = ace.edit("script-editor");
                                 editor.setTheme("ace/theme/monokai");
                                 editor.session.setMode("ace/mode/javascript");
+                                ace.require("ace/ext/language_tools");
+                                editor.setOptions({
+                                    enableBasicAutocompletion: true,
+                                    enableLiveAutocompletion: true,
+                                    enableSnippets: true,
+                                    wrap: true,
+                                });
                                 editor.getSession().setUseWorker(false);
-                                editor.setOption("wrap", true);
                                 editor.session.on('change', function () {
                                     document.getElementById('script').value = editor.getValue();
                                 });

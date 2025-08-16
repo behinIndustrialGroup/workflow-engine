@@ -20,6 +20,8 @@ Route::name('simpleWorkflow.')->prefix('workflow')->middleware(['web', 'auth'])-
         Route::get('', [ ProcessController::class, 'index' ])->name('index');
         Route::get('create', [ ProcessController::class, 'create' ])->name('create');
         Route::post('store', [ ProcessController::class, 'store' ])->name('store');
+        Route::get('{processId}/edit', [ ProcessController::class, 'edit' ])->name('edit');
+        Route::put('{processId}', [ ProcessController::class, 'update' ])->name('update');
         Route::get('start-list', [ ProcessController::class, 'startListView' ])->name('startListView');
         Route::get('start/{taskId}/{force?}/{redirect?}/{inDraft}', [ ProcessController::class, 'start' ])->name('start');
         Route::get('check-error/{processId}', [ ProcessController::class, 'processHasError' ])->name('processHasError');
@@ -34,6 +36,7 @@ Route::name('simpleWorkflow.')->prefix('workflow')->middleware(['web', 'auth'])-
         Route::post('create', [ TaskController::class, 'create' ])->name('create');
         Route::get('{task}/edit', [ TaskController::class, 'edit' ])->name('edit');
         Route::put('{task}/update', [ TaskController::class, 'update' ])->name('update');
+        Route::delete('{task}/delete', [ TaskController::class, 'destroy' ])->name('delete');
 
         Route::get('actor/{taskId}', [ TaskController::class, 'index' ])->name('actor');
 
@@ -55,6 +58,8 @@ Route::name('simpleWorkflow.')->prefix('workflow')->middleware(['web', 'auth'])-
         Route::post('open-create-new/{form_id}', [ FormController::class, 'openCreateNew' ])->name('open');
     });
 
+    Route::post('scripts/export', [ScriptController::class, 'export'])->name('scripts.export');
+    Route::post('scripts/import', [ScriptController::class, 'import'])->name('scripts.import');
     Route::resource('scripts', ScriptController::class);
     Route::post('scripts/{id}/test', [ ScriptController::class, 'test' ])->name('scripts.test');
     Route::any('scripts/{id}/run', [ ScriptController::class, 'runFromView' ])->name('scripts.run');
@@ -64,6 +69,8 @@ Route::name('simpleWorkflow.')->prefix('workflow')->middleware(['web', 'auth'])-
     Route::resource('conditions', ConditionController::class);
     Route::post('conditions/{id}/test', [ ConditionController::class, 'runConditionForTest' ])->name('conditions.test');
     Route::resource('task-actors', TaskActorController::class);
+    Route::post('fields/export', [FieldController::class, 'export'])->name('fields.export');
+    Route::post('fields/import', [FieldController::class, 'import'])->name('fields.import');
     Route::resource('fields', FieldController::class);
     Route::get('fields/{field}/copy', [FieldController::class, 'copy'])->name('fields.copy');
 
@@ -92,13 +99,25 @@ Route::name('simpleWorkflow.')->prefix('workflow')->middleware(['web', 'auth'])-
 
 
     Route::resource('entities', EntityController::class);
+    Route::post('entities/export', [EntityController::class, 'export'])->name('entities.export');
+    Route::post('entities/import', [EntityController::class, 'import'])->name('entities.import');
     Route::get('entities/{entity}/create-table', [EntityController::class, 'createTable'])->name('entities.createTable');
+    Route::get('entities/{entity}/records', [EntityController::class, 'records'])->name('entities.records');
+    Route::get('entities/{entity}/records/create', [EntityController::class, 'createRecord'])->name('entities.createRecord');
+    Route::post('entities/{entity}/records', [EntityController::class, 'storeRecord'])->name('entities.storeRecord');
+    Route::post('entities/{entity}/records/export', [EntityController::class, 'exportRecords'])->name('entities.records.export');
+    Route::post('entities/{entity}/records/import', [EntityController::class, 'importRecords'])->name('entities.records.import');
+    Route::get('entities/{entity}/records/{id}/edit', [EntityController::class, 'editRecord'])->name('entities.editRecord');
+    Route::put('entities/{entity}/records/{id}', [EntityController::class, 'updateRecord'])->name('entities.updateRecord');
+    Route::delete('entities/{entity}/records/{id}', [EntityController::class, 'deleteRecord'])->name('entities.deleteRecord');
 
     Route::resource('task-jump', TaskJumpController::class);
     Route::get('task-jump/{task_id}/{inbox_id}/{case_id}/{process_id}', [TaskJumpController::class, 'show'])->name('task-jump.show');
 
     Route::resource('view-model', ViewModelController::class);
     Route::get('view-model/{view_model}/copy', [ViewModelController::class, 'copy'])->name('view-model.copy');
+    Route::post('view-model/export', [ViewModelController::class, 'export'])->name('view-model.export');
+    Route::post('view-model/import', [ViewModelController::class, 'import'])->name('view-model.import');
     Route::post('get-view-model-rows', [ViewModelController::class, 'getRows'])->name('view-model.get-rows');
     Route::post('update-view-model-record', [ViewModelController::class, 'updateRecord'])->name('view-model.update-record');
     Route::post('delete-view-model-record', [ViewModelController::class, 'deleteRecord'])->name('view-model.delete-record');

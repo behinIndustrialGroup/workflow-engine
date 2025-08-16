@@ -8,6 +8,15 @@
                 {{ session('error') }}
             </div>
         @endif
+        <div class="mb-3">
+            <label for="process-filter" class="form-label">{{ trans('fields.Process') }}</label>
+            <select id="process-filter" class="form-select">
+                <option value="">{{ trans('fields.All') }}</option>
+                @foreach ($processes as $process)
+                    <option value="{{ $process->id }}" {{ (isset($selectedProcess) && $selectedProcess == $process->id) ? 'selected' : '' }}>{{ $process->name }}</option>
+                @endforeach
+            </select>
+        </div>
         @if ($rows->isEmpty())
             {{-- <div class="alert alert-info">
             {{ trans('You have no items in your inbox.') }}
@@ -29,9 +38,10 @@
                     @foreach ($rows as $index => $row)
                         <tr ondblclick="window.location.href = '{{ route('simpleWorkflow.inbox.view', $row->id) }}'">
                             <td>
-                                {{ $index + 1 }}
-                                <a href="{{ route('simpleWorkflow.inbox.view', $row->id) }}"
+                            <a href="{{ route('simpleWorkflow.inbox.view', $row->id) }}"
                                     class="btn btn-sm btn-primary"><i class="fa fa-external-link"></i></a>
+                                {{ str_pad($index + 1, 3, '0', STR_PAD_LEFT) }}
+                                
                                 @if ($row->status == 'draft')
                                     <a href="{{ route('simpleWorkflow.inbox.delete', $row->id) }}"
                                         class="btn btn-sm btn-danger">{{ trans('fields.Delete') }}
@@ -63,6 +73,17 @@
         @endif
 
     </div>
+    <script>
+        document.getElementById('process-filter').addEventListener('change', function () {
+            const url = new URL(window.location.href);
+            if (this.value) {
+                url.searchParams.set('process', this.value);
+            } else {
+                url.searchParams.delete('process');
+            }
+            window.location.href = url.toString();
+        });
+    </script>
     @if (auth()->user()->access('کارتابل پراسس میکر'))
         <div class="container table-responsive card">
             <div class="alert alert-warning">کارتابل قدیم</div>

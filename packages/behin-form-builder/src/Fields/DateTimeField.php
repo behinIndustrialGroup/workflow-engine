@@ -2,7 +2,7 @@
 
 namespace MyFormBuilder\Fields;
 
-class DateField extends AbstractField
+class DateTimeField extends AbstractField
 {
     public function render(): string
     {
@@ -34,7 +34,8 @@ class DateField extends AbstractField
         $s .= "<script>$('#$this->name').persianDatepicker({
                 viewMode: 'day',
                 initialValue: false,
-                format: 'YYYY-MM-DD',
+                format: 'YYYY-MM-DD HH:mm',
+                timePicker: { enabled: true, second: { enabled: false } },
                 initialValueType: 'persian',
                 altField: '#". $this->name ."_alt',
                 calendar: {
@@ -46,9 +47,5 @@ class DateField extends AbstractField
             });</script>";
         $s .= '</div>';
         return $s;
-        if (!isset($this->attributes['type'])) {
-            $this->attributes['type'] = 'text';
-        }
-        return sprintf('<input %s>', $this->buildAttributes());
     }
 }
