@@ -42,7 +42,8 @@ Route::name('simpleWorkflowReport.')->prefix('workflow-report')->middleware(['we
     Route::get('external-internal-archive', [ExternalAndInternalReportController::class, 'archive'])->name('external-internal-archive');
 
     Route::resource('counter-party', CounterPartyController::class);
-    Route::get('phonebook', [PhonebookController::class, 'index'])->name('phonebook.index');
+    Route::resource('phonebook', PhonebookController::class)->except(['show']);
+
 
     Route::name('fin.')->prefix('fin')->group(function(){
         Route::get('', [FinReportController::class, 'index'])->name('index');
