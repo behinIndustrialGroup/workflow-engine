@@ -108,12 +108,13 @@
                                                                 ]
                                                             )
                                                         </select>
-                                                        @if ($editId = getFieldDetailsByName($field->fieldName)?->id)
-                                                            <a class=""
-                                                                href="{{ route('simpleWorkflow.fields.edit', ['field' => $editId]) }}"><i class="fa fa-edit"></i></a>
+                                                        @php
+                                                            $editId = $field->id ?? getFieldDetailsByName($field->fieldName)?->id;
+                                                        @endphp
+                                                        @if ($editId)
+                                                            <a class="" href="{{ route('simpleWorkflow.fields.edit', ['field' => $editId]) }}"><i class="fa fa-edit"></i></a>
                                                         @else
-                                                            <a class=""
-                                                                href="{{ route('simpleWorkflow.form.edit', ['id' => $field->fieldName]) }}"><i class="fa fa-edit"></i></a>
+                                                            <a class="" href="{{ route('simpleWorkflow.form.edit', ['id' => $field->fieldName]) }}"><i class="fa fa-edit"></i></a>
                                                         @endif
                                                     </td>
                                                 </tr>
