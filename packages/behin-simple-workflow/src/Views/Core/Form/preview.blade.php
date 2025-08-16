@@ -15,14 +15,9 @@
             $readOnly = $mode ? $mode : $field->readOnly;
             $fieldDetails = isset($field->id) ? getFieldDetailsById($field->id) : null;
             if (!$fieldDetails) {
-                if (isset($field->id)) {
-                    $childForm = getFormInformation($field->id);
-                }
-                if (!isset($childForm)) {
-                    $fieldDetails = getFieldDetailsByName($field->fieldName);
-                    if (!$fieldDetails && $field->fieldName != $form->id) {
-                        $childForm = getFormInformation($field->fieldName);
-                    }
+                $fieldDetails = getFieldDetailsByName($field->fieldName);
+                if(!$fieldDetails){
+                    $childForm = getFormInformation($field->fieldName);
                 }
             }
             if ($fieldDetails) {

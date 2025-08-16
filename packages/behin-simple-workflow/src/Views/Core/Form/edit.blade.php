@@ -72,6 +72,12 @@
                     <div class="accordion row" id="accordionExample">
                         @if (is_array($content))
                             @foreach ($content as $field)
+                            @php
+                                $fieldDetails = isset($field->id) ? getFieldDetailsById($field->id) : null;
+                                if(!$fieldDetails){
+                                    $fieldDetails = getFieldDetailsByName($field->fieldName);
+                                }
+                            @endphp
                                 <div class="card {{ $field->class ?? '' }}">
                                     <div class="card-header btn btn-light text-right" id="heading_{{ $index }}" type="button" data-toggle="collapse"
                                     data-target="#collapse_{{ $index }}" aria-expanded="true"
@@ -98,13 +104,14 @@
                                                 <tr>
                                                     <td>{{ trans('Field Name') }}</td>
                                                     <td class="" style="width: 80px">
+                                                        <input type="hidden" name="id[{{ $index }}]" value="{{ $fieldDetails->id }}">
                                                         <select name="fieldName[{{ $index }}]" id=""
                                                             class="form-control select2" dir="ltr">
                                                             @include(
                                                                 'SimpleWorkflowView::Core.Form.all-fields-options',
                                                                 [
                                                                     'form' => $form,
-                                                                    'selectedField' => $field->fieldName,
+                                                                    'selectedField' => $fieldDetails->id,
                                                                 ]
                                                             )
                                                         </select>

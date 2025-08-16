@@ -93,11 +93,14 @@ class FormController extends Controller
         $form = self::getById($request->formId);
         $ar = [];
         $index = 0;
-        foreach($request->fieldName as $fieldName){
-            if($fieldName){
-                $fieldDetails = getFieldDetailsByName($fieldName);
+        foreach($request->id as $id){
+            if($id){
+                $fieldDetails = getFieldDetailsById($id);
+                if(!$fieldDetails){
+                    $fieldDetails = getFieldDetailsByName($request->fieldName[$index]);
+                }
                 $ar[] = [
-                    'fieldName' => $fieldDetails?->name ?? $fieldName,
+                    'fieldName' => $fieldDetails?->name,
                     'id' => $fieldDetails?->id,
                     'order' => $request->order[$index] ? $request->order[$index] : $index+1,
                     'required' => isset($request->required[$index]) ? $request->required[$index] : 'off',
