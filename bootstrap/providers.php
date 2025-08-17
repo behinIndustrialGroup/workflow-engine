@@ -20,5 +20,6 @@ return [
     MyFormBuilder\FormBuilderServiceProvider::class,
     TodoList\TodoListProvider::class,
     UserProfile\UserProfileProvider::class,
+    Behin\TelegramBot\TelegramBotServiceProvider::class,
     ShortenerUrl\Shortener\ShortenerServiceProvider::class,
 ];

@@ -1,0 +1,17 @@
+{
+    "name": "behin/telegram-bot",
+    "version": "1.0",
+    "description": "Telegram bot management package",
+    "autoload": {
+        "psr-4": {
+            "Behin\\TelegramBot\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "mkhodroo",
+            "email": "mkhodroo@yahoo.com"
+        }
+    ],
+    "require": {}
+}
