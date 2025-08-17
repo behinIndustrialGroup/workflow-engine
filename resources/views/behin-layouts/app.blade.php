@@ -160,7 +160,7 @@
         src="{{ url('public/behin/behin-dist/plugins/autonumeric/autoNumeric.min.js') . '?' . config('app.version') }}">
     </script>
 
-
+<script src="{{ url('public/behin/behin-js/tailwind.js') }}"></script>
 
     @yield('script_in_head')
 
