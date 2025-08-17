@@ -1,0 +1,9 @@
+{
+    "name": "behin/ami",
+    "description": "Asterisk AMI integration package",
+    "autoload": {
+        "psr-4": {
+            "Behin\\Ami\\": "src/"
+        }
+    }
+}
