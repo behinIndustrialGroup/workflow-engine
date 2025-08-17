@@ -48,7 +48,8 @@
             "MyFormBuilder\\": "packages/behin-form-builder/src/",
             "Mkhodroo\\Cities\\": "packages/mkhodroo-cities/src/",
             "ShortenerUrl\\Shortener\\": "packages/shortener-url/Shortener/src/",
-            "Behin\\Ami\\": "packages/behin-ami/src/"
+            "Behin\\Ami\\": "packages/behin-ami/src/",
+            "Behin\\JobManager\\": "packages/behin-job-manager/src/"
 
         },
         "files": [
