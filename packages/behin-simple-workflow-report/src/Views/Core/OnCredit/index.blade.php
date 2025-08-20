@@ -36,7 +36,10 @@
                         <th>شماره پرونده</th>
                         <th>نام مشتری</th>
                         <th>مبلغ</th>
-                        <th>تاریخ</th>
+                        <th>تاریخ اعلام صورت حساب</th>
+                        {{-- <th>تاریخ تسویه</th>
+                        <th>تسویه مطابق شماره فاکتور</th>
+                        <th>تاریخ فاکتور</th> --}}
                         <th>توضیحات</th>
                         <th>تسویه شد</th>
                     </tr>
@@ -65,9 +68,24 @@
                                 {{ number_format($onCredit->cost) }}
                             </td>
                             <td>{{ toJalali((int) $onCredit->fix_cost_date)->format('Y-m-d') }}</td>
-
-
-
+                            {{-- <td>
+                                <form action="{{ route('simpleWorkflowReport.on-credit-report.update', $onCredit->id) }}"
+                                    method="POST">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="text" id="settlement_date" class="settlement_date"
+                                        name="settlement_date" value="{{ $onCredit->settlement_date }}">
+                            </td>
+                            <td>
+                                <input type="text" id="invoice_number" name="invoice_number"
+                                    value="{{ $onCredit->invoice_number }}">
+                            </td>
+                            <td>
+                                <input type="text" id="invoice_date" name="invoice_date" class="invoice_date"
+                                    value="{{ $onCredit->invoice_date }}">
+                                <button type="submit" class="btn btn-sm btn-primary">ذخیره</button>
+                                </form>
+                            </td> --}}
                             <td>{{ $onCredit->description }}</td>
 
                             {{-- دکمه پاس شد --}}
@@ -75,14 +93,17 @@
                                 @if ($onCredit->is_passed)
                                     {{-- <span class="badge bg-success">تسویه شد</span> --}}
                                 @else
-                                    <form method="POST"
+                                    {{-- <form method="POST"
                                         action="{{ route('simpleWorkflowReport.on-credit-report.update', $onCredit->id) }}"
                                         onsubmit="return confirm('آیا از تسویه شدن این حساب دفتری مطمئن هستید؟')">
                                         @csrf
                                         @method('PATCH')
                                         <input type="hidden" name="is_passed" value="1">
                                         <button type="submit" class="btn btn-sm btn-success">تسویه شد</button>
-                                    </form>
+                                    </form> --}}
+                                    <button class="btn btn-sm " onclick="">
+                                        ویرایش
+                                    </button>
                                 @endif
                             </td>
                         </tr>
@@ -110,6 +131,30 @@
 @section('script')
 @section('script')
     <script>
+        $('.settlement_date').persianDatepicker({
+            viewMode: 'day',
+            initialValue: false,
+            format: 'YYYY-MM-DD',
+            initialValueType: 'persian',
+            calendar: {
+                persian: {
+                    leapYearMode: 'astronomical',
+                    locale: 'fa'
+                }
+            }
+        });
+        $('.invoice_date').persianDatepicker({
+            viewMode: 'day',
+            initialValue: false,
+            format: 'YYYY-MM-DD',
+            initialValueType: 'persian',
+            calendar: {
+                persian: {
+                    leapYearMode: 'astronomical',
+                    locale: 'fa'
+                }
+            }
+        });
         $(document).ready(function() {
             $('#on-credit-list').DataTable({
                 pageLength: 25,
@@ -133,7 +178,7 @@
                     }).every(function(rowIdx, tableLoop, rowLoop) {
                         var amount = this.data()[2]; // ستون مبلغ
                         var tasvie = $(this.node()).find('td:last').text()
-                    .trim(); // ستون تسویه از DOM
+                            .trim(); // ستون تسویه از DOM
 
                         if (tasvie.length > 0) {
                             pageTotal += intVal(amount);
