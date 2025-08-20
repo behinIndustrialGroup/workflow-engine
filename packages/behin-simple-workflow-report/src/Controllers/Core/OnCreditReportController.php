@@ -32,16 +32,60 @@ class OnCreditReportController extends Controller
         return view('SimpleWorkflowReportView::Core.OnCredit.index', compact('onCredits'));
     }
 
+    public function edit($id)
+    {
+        $onCredit = Financials::findOrFail($id);
+        $payments = Financials::where('case_number', $onCredit->case_number)
+            ->whereNotNull('payment')
+            ->get();
+        return view('SimpleWorkflowReportView::Core.OnCredit.edit', compact('onCredit', 'payments'));
+    }
+
     public function update(Request $request, $id)
     {
         $onCredit = Financials::findOrFail($id);
 
-
         if ($request->has('is_passed')) {
             $onCredit->is_passed = true;
+            $onCredit->save();
+            return redirect()->back()->with('success', 'با موفقیت ذخیره شد.');
         }
 
-        $onCredit->save();
+        $payments = $request->input('payments', []);
+        foreach ($payments as $payment) {
+            if (!isset($payment['type']) || $payment['type'] === '') {
+                continue;
+            }
+
+            $fin = new Financials();
+            $fin->case_number = $onCredit->case_number;
+            $fin->case_id = $onCredit->case_id;
+            $fin->process_id = $onCredit->process_id;
+            $fin->process_name = $onCredit->process_name;
+            $fin->payment_method = $payment['type'];
+
+            switch ($payment['type']) {
+                case 'cash':
+                    $fin->payment = isset($payment['amount']) ? str_replace(',', '', $payment['amount']) : null;
+                    $fin->payment_date = !empty($payment['date']) ? convertPersianDateToTimestamp($payment['date']) : null;
+                    $fin->destination_account = $payment['account_number'] ?? null;
+                    $fin->destination_account_name = $payment['account_name'] ?? null;
+                    break;
+                case 'cheque':
+                    $fin->cost = isset($payment['amount']) ? str_replace(',', '', $payment['amount']) : null;
+                    $fin->cheque_due_date = !empty($payment['date']) ? convertPersianDateToTimestamp($payment['date']) : null;
+                    $fin->cheque_number = $payment['cheque_number'] ?? null;
+                    $fin->destination_account_name = $payment['bank_name'] ?? null;
+                    break;
+                case 'invoice':
+                    $fin->cost = isset($payment['amount']) ? str_replace(',', '', $payment['amount']) : null;
+                    $fin->fix_cost_date = !empty($payment['date']) ? convertPersianDateToTimestamp($payment['date']) : null;
+                    $fin->description = $payment['invoice_number'] ?? null;
+                    break;
+            }
+
+            $fin->save();
+        }
 
         return redirect()->back()->with('success', 'با موفقیت ذخیره شد.');
     }
