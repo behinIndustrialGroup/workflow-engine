@@ -101,7 +101,7 @@
                                         <input type="hidden" name="is_passed" value="1">
                                         <button type="submit" class="btn btn-sm btn-success">تسویه شد</button>
                                     </form> --}}
-                                    <button class="btn btn-sm " onclick="">
+                                    <button class="btn btn-sm" onclick="open_admin_modal('{{ route('simpleWorkflowReport.on-credit-report.edit', $onCredit->id) }}')">
                                         ویرایش
                                     </button>
                                 @endif
