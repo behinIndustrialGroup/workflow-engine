@@ -350,5 +350,6 @@ return array (
   'Payment Amount' => 'مبلغ دریافت شده',
   'Destination Account Name' => 'نام مقصد حساب',
   'Destination Account Number' => 'شماره مقصد حساب',
+  'Workflow' => 'گردش کار',
   'Unknown' => 'نامشخص',
 );
