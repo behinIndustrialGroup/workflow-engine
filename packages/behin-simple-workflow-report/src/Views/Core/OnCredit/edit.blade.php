@@ -24,7 +24,7 @@
         <h6>پرداخت های ثبت شده</h6>
         <ul class="list-group">
             @foreach($payments as $payment)
-                <li class="list-group-item">{{ $payment->payment_method }} - {{ number_format($payment->payment) }}</li>
+                <li class="list-group-item">{{ $payment->payment_type }} - {{ number_format($payment->amount) }}</li>
             @endforeach
         </ul>
     @endif

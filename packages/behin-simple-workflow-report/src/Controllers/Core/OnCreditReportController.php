@@ -14,6 +14,7 @@ use Behin\SimpleWorkflow\Models\Core\Process;
 use Behin\SimpleWorkflow\Models\Core\TaskActor;
 use Behin\SimpleWorkflow\Models\Core\Variable;
 use Behin\SimpleWorkflow\Models\Entities\Financials;
+use Behin\SimpleWorkflow\Models\Entities\OnCreditPayment;
 use Behin\SimpleWorkflowReport\Helper\ReportHelper;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
@@ -35,9 +36,7 @@ class OnCreditReportController extends Controller
     public function edit($id)
     {
         $onCredit = Financials::findOrFail($id);
-        $payments = Financials::where('case_number', $onCredit->case_number)
-            ->whereNotNull('payment')
-            ->get();
+        $payments = OnCreditPayment::where('case_number', $onCredit->case_number)->get();
         return view('SimpleWorkflowReportView::Core.OnCredit.edit', compact('onCredit', 'payments'));
     }
 
@@ -57,30 +56,26 @@ class OnCreditReportController extends Controller
                 continue;
             }
 
-            $fin = new Financials();
+            $fin = new OnCreditPayment();
             $fin->case_number = $onCredit->case_number;
             $fin->case_id = $onCredit->case_id;
             $fin->process_id = $onCredit->process_id;
             $fin->process_name = $onCredit->process_name;
-            $fin->payment_method = $payment['type'];
+            $fin->payment_type = $payment['type'];
+            $fin->amount = isset($payment['amount']) ? str_replace(',', '', $payment['amount']) : null;
+            $fin->date = !empty($payment['date']) ? convertPersianDateToTimestamp($payment['date']) : null;
 
             switch ($payment['type']) {
                 case 'cash':
-                    $fin->payment = isset($payment['amount']) ? str_replace(',', '', $payment['amount']) : null;
-                    $fin->payment_date = !empty($payment['date']) ? convertPersianDateToTimestamp($payment['date']) : null;
-                    $fin->destination_account = $payment['account_number'] ?? null;
-                    $fin->destination_account_name = $payment['account_name'] ?? null;
+                    $fin->account_number = $payment['account_number'] ?? null;
+                    $fin->account_name = $payment['account_name'] ?? null;
                     break;
                 case 'cheque':
-                    $fin->cost = isset($payment['amount']) ? str_replace(',', '', $payment['amount']) : null;
-                    $fin->cheque_due_date = !empty($payment['date']) ? convertPersianDateToTimestamp($payment['date']) : null;
                     $fin->cheque_number = $payment['cheque_number'] ?? null;
-                    $fin->destination_account_name = $payment['bank_name'] ?? null;
+                    $fin->bank_name = $payment['bank_name'] ?? null;
                     break;
                 case 'invoice':
-                    $fin->cost = isset($payment['amount']) ? str_replace(',', '', $payment['amount']) : null;
-                    $fin->fix_cost_date = !empty($payment['date']) ? convertPersianDateToTimestamp($payment['date']) : null;
-                    $fin->description = $payment['invoice_number'] ?? null;
+                    $fin->invoice_number = $payment['invoice_number'] ?? null;
                     break;
             }
 
