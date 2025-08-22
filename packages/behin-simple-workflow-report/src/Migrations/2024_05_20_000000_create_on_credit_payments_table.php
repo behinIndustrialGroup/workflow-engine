@@ -16,10 +16,11 @@ return new class extends Migration
             $table->string('process_name')->nullable();
             $table->string('payment_type');
             $table->unsignedBigInteger('amount')->nullable();
-            $table->timestamp('date')->nullable();
+            $table->string('date')->nullable();
             $table->string('account_number')->nullable();
             $table->string('account_name')->nullable();
             $table->string('cheque_number')->nullable();
+            $table->string('cheque_due_date')->nullable();
             $table->string('bank_name')->nullable();
             $table->string('invoice_number')->nullable();
             $table->timestamps();

@@ -62,20 +62,42 @@ class OnCreditReportController extends Controller
             $fin->process_id = $onCredit->process_id;
             $fin->process_name = $onCredit->process_name;
             $fin->payment_type = $payment['type'];
-            $fin->amount = isset($payment['amount']) ? str_replace(',', '', $payment['amount']) : null;
-            $fin->date = !empty($payment['date']) ? convertPersianDateToTimestamp($payment['date']) : null;
 
             switch ($payment['type']) {
                 case 'cash':
+                    $fin->amount = isset($payment['cash_amount']) ? str_replace(',', '', $payment['cash_amount']) : null;
+                    $fin->date = !empty($payment['cash_date']) ? convertPersianDateToTimestamp($payment['cash_date']) : null;
                     $fin->account_number = $payment['account_number'] ?? null;
                     $fin->account_name = $payment['account_name'] ?? null;
+                    $fin->invoice_number = $payment['cash_invoice_number'] ?? null;
                     break;
                 case 'cheque':
-                    $fin->cheque_number = $payment['cheque_number'] ?? null;
+                    $preCheque = OnCreditPayment::where('cheque_number', $payment['cheque_number'])->where('payment_type', 'cheque')->first();
+                    if($preCheque){
+                        if($preCheque->amount != $payment['cheque_amount']){
+                            return response()->json([
+                                'status' => 'error',
+                                'message' => 'این شماره چک قبلا با مبلغ ' . number_format($preCheque->amount) . ' برای پرونده ' . $preCheque->case_number . ' ثبت شده است و مبلغ آن با مبلغ وارد شده الان یکسان نیست.'
+                            ]);
+                        }
+                        if($preCheque->bank_name != $payment['bank_name']){
+                            return response()->json([
+                                'status' => 'error',
+                                'message' => 'این شماره چک قبلا با نام بانک ' . $preCheque->bank_name . ' برای پرونده ' . $preCheque->case_number . ' ثبت شده است و نام بانک آن با نام بانک وارد شده الان یکسان نیست.'
+                            ]);
+                        }
+                        if($preCheque->cheque_due_date != $payment['cheque_due_date']){
+                            return response()->json([
+                                'status' => 'error',
+                                'message' => 'این شماره چک قبلا با سررسید ' . $preCheque->cheque_due_date . ' برای پرونده ' . $preCheque->case_number . ' ثبت شده است و سررسید آن با سررسید وارد شده الان یکسان نیست.'
+                            ]);
+                        }
+                    }
+                    $fin->amount = isset($payment['cheque_amount']) ? str_replace(',', '', $payment['cheque_amount']) : null;
                     $fin->bank_name = $payment['bank_name'] ?? null;
-                    break;
-                case 'invoice':
-                    $fin->invoice_number = $payment['invoice_number'] ?? null;
+                    $fin->cheque_number = $payment['cheque_number'] ?? null;
+                    $fin->cheque_due_date = !empty($payment['cheque_due_date']) ? convertPersianDateToTimestamp($payment['cheque_due_date']) : null;
+                    $fin->invoice_number = $payment['cheque_invoice_number'] ?? null;
                     break;
             }
 
@@ -91,10 +113,13 @@ class OnCreditReportController extends Controller
             ->whereIn('fix_cost_type', ['حساب دفتری'])
             ->whereNull('is_passed')
             ->get();
-        $inboxes = Inbox::whereIn('task_id', 
-        ['adee777f-da9d-4d54-bf00-020a27e0f861', 
-        'c008cd7d-ea9c-4b0b-917b-97e8ff651155', 
-        '1c63c629-b27b-4fe6-a993-a7a149926c55']
+        $inboxes = Inbox::whereIn(
+            'task_id',
+            [
+                'adee777f-da9d-4d54-bf00-020a27e0f861',
+                'c008cd7d-ea9c-4b0b-917b-97e8ff651155',
+                '1c63c629-b27b-4fe6-a993-a7a149926c55'
+            ]
         )->where('status', 'new')->get();
         return view('SimpleWorkflowReportView::Core.OnCredit.show-all', compact('onCredits', 'inboxes'));
     }

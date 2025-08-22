@@ -23,6 +23,7 @@ class OnCreditPayment extends Model
         'account_number',
         'account_name',
         'cheque_number',
+        'cheque_due_date',
         'bank_name',
         'invoice_number',
     ];
