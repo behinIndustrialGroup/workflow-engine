@@ -93,7 +93,7 @@ class TaskController extends Controller
         $hasError = 0;
         if($task->type == 'form'){
             // $hasError++;
-            if($task->actors()->count() == 0){
+            if($task->actors()->count() == 0 and $task->assignment_type != 'public'){
                 $hasError++;
                 $descriptions = trans('fields.don\'t have actor');
             }

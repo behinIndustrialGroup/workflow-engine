@@ -64,14 +64,14 @@ class OnCreditReportController extends Controller
             $fin->payment_type = $payment['type'];
 
             switch ($payment['type']) {
-                case 'cash':
+                case 'نقدی':
                     $fin->amount = isset($payment['cash_amount']) ? str_replace(',', '', $payment['cash_amount']) : null;
-                    $fin->date = !empty($payment['cash_date']) ? convertPersianDateToTimestamp($payment['cash_date']) : null;
+                    $fin->date = convertPersianDateToTimestamp($payment['cash_date']);
                     $fin->account_number = $payment['account_number'] ?? null;
                     $fin->account_name = $payment['account_name'] ?? null;
                     $fin->invoice_number = $payment['cash_invoice_number'] ?? null;
                     break;
-                case 'cheque':
+                case 'چک':
                     $preCheque = OnCreditPayment::where('cheque_number', $payment['cheque_number'])->where('payment_type', 'cheque')->first();
                     if($preCheque){
                         if($preCheque->amount != $payment['cheque_amount']){
@@ -102,6 +102,7 @@ class OnCreditReportController extends Controller
             }
 
             $fin->save();
+            return $fin->date;
         }
 
         return redirect()->back()->with('success', 'با موفقیت ذخیره شد.');

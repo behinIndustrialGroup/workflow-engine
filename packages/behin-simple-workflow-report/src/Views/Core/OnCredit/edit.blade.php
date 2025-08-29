@@ -38,6 +38,7 @@
         var fd = new FormData(document.getElementById('payment-form'));
         var url = "{{ route('simpleWorkflowReport.on-credit-report.update', $onCredit->id) }}";
         send_ajax_formdata_request(url, fd, function(response) {
+            console.log(response);
             if (response.status === 'success') {
                 alert(response.message);
             } else {
@@ -57,8 +58,8 @@
                             <div class="col-md-3">
                                 <label class="form-label">نوع پرداخت</label>
                                 <select name="payments[${rowIndex}][type]" class="form-select payment-type">
-                                    <option value="cash">نقدی</option>
-                                    <option value="cheque">چک</option>
+                                    <option value="نقدی">نقدی</option>
+                                    <option value="چک">چک</option>
                                 </select>
                             </div>
                             <div class="col-md-8">
