@@ -7,8 +7,6 @@ return [
     BehinFileControl\BehinFileControlProvider::class,
     BehinInit\BehinInitProvider::class,
     BehinLogging\ServiceProvider::class,
-    BehinProcessMakerAdmin\BehinProcessMakerAdminProvider::class,
-    BehinProcessMaker\BehinProcessMakerProvider::class,
     BehinUserRoles\UserRolesServiceProvider::class,
     Behin\PMCaseNumbering\PackageServiceProvider::class,
     Behin\SimpleWorkflowReport\SimpleWorkflowReportProvider::class,
