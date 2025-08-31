@@ -1,0 +1,9 @@
+{
+    "name": "behin/job-manager",
+    "description": "Manage Laravel queue jobs",
+    "autoload": {
+        "psr-4": {
+            "Behin\\JobManager\\": "src/"
+        }
+    }
+}

@@ -20,4 +20,5 @@ return [
     UserProfile\UserProfileProvider::class,
     ShortenerUrl\Shortener\ShortenerServiceProvider::class,
     Behin\Ami\AmiServiceProvider::class,
+    Behin\JobManager\JobManagerServiceProvider::class,
 ];
