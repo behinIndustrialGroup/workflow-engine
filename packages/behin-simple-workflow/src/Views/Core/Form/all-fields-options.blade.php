@@ -2,7 +2,7 @@
     $selectedField = isset($selectedField) ? $selectedField : null;
 @endphp
 @foreach (getProcessFields() as $field)
-    <option dir="ltr" value="{{ $field->name }}" {{ $field->name == $selectedField ? 'selected' : '' }}>{{ $field->type }}:
+    <option dir="ltr" value="{{ $field->id }}" {{ $field->id == $selectedField ? 'selected' : '' }}>{{ $field->type }}:
         {{ $field->name }}
     </option>
 @endforeach

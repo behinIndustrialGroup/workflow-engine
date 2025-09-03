@@ -52,14 +52,21 @@
                             $fieldId = $field->fieldName;
                             $required = $field->required;
                             $readOnly = $field->readOnly;
-                            $fieldDetails = getFieldDetailsByName($field->fieldName);
+                            $fieldDetails = isset($field->id) ? getFieldDetailsById($field->id) : null;
+                            if (!$fieldDetails) {
+                                if (isset($field->id)) {
+                                    $childForm = getFormInformation($field->id);
+                                }
+                                if (!isset($childForm)) {
+                                    $fieldDetails = getFieldDetailsByName($field->fieldName);
+                                    if (!$fieldDetails && $field->fieldName != $form->id) {
+                                        $childForm = getFormInformation($field->fieldName);
+                                    }
+                                }
+                            }
                             if ($fieldDetails) {
                                 $fieldAttributes = json_decode($fieldDetails->attributes);
                                 $fieldValue = $row->$fieldName ?? '';
-                            } else {
-                                if ($field->fieldName != $form->id) {
-                                    $childForm = getFormInformation($field->fieldName);
-                                }
                             }
                         @endphp
 
@@ -72,7 +79,8 @@
                                     'readOnly' => $readOnly,
                                     'required' => $required,
                                     'fieldValue' => $fieldValue,
-                                ])
+                                    'fieldDbId' => $field->id ?? null,
+                                    ])
                             </div>
                         @endif
                     @endforeach

@@ -1,6 +1,9 @@
 @php
     $fieldLabel = trans('SimpleWorkflowLang::fields.' . $fieldName);
-    $fieldDetails = getFieldDetailsByName($fieldName);
+    $fieldDetails = isset($fieldDbId) ? getFieldDetailsById($fieldDbId) : null;
+    if (!$fieldDetails) {
+        $fieldDetails = getFieldDetailsByName($fieldName);
+    }
     if ($fieldDetails) {
         $fieldAttributes = json_decode($fieldDetails->attributes);
     }
