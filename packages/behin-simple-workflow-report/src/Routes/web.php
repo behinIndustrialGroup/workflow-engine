@@ -23,6 +23,7 @@ use Behin\SimpleWorkflowReport\Controllers\Core\TimeoffController;
 use Behin\SimpleWorkflowReport\Controllers\Core\CounterPartyController;
 use Behin\SimpleWorkflowReport\Controllers\Core\CreditorReportController;
 use Behin\SimpleWorkflowReport\Controllers\Core\DailyReportController;
+use Behin\SimpleWorkflowReport\Controllers\Core\PettyCashController;
 use Behin\SimpleWorkflowReport\Controllers\Core\OnCreditReportController;
 use Behin\SimpleWorkflowReport\Controllers\Core\PersonelActivityController;
 use Behin\SimpleWorkflowReport\Controllers\Core\PhonebookController;
@@ -81,6 +82,8 @@ Route::name('simpleWorkflowReport.')->prefix('workflow-report')->middleware(['we
     Route::resource('cheque-report', ChequeReportController::class);
     Route::resource('on-credit-report', OnCreditReportController::class);
     Route::get('on-credit-report-show-all', [OnCreditReportController::class, 'showAll'])->name('on-credit-report.showAll');
+    Route::resource('petty-cash', PettyCashController::class)->except(['show', 'create']);
+    Route::get('petty-cash/export', [PettyCashController::class, 'export'])->name('petty-cash.export');
     Route::resource('personel-activity', PersonelActivityController::class);
     Route::get('personel-activity/{user_id}/show-inboxes/{from?}/{to?}', [PersonelActivityController::class, 'showInboxes'])->name('personel-activity.showInboxes');
     Route::get('personel-activity/{user_id}/show-dones/{from?}/{to?}', [PersonelActivityController::class, 'showDones'])->name('personel-activity.showDones');
