@@ -31,7 +31,7 @@
                     <input name="title" class="form-control" placeholder="عنوان خرج" required>
                 </div>
                 <div class="col-md-2">
-                    <input name="amount" class="form-control" placeholder="مبلغ" required>
+                    <input name="amount" class="form-control formatted-digit" placeholder="مبلغ" required>
                 </div>
                 <div class="col-md-3">
                     <input type="text" name="paid_at" class="form-control persian-date" required>

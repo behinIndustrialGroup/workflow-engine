@@ -40,9 +40,12 @@ class PettyCashController extends Controller
             'paid_at' => 'required|string',
             'from_account' => 'nullable|string',
         ]);
+        $data['paid_at'] = convertPersianToEnglish($data['paid_at']);
         $data['paid_at'] = Jalalian::fromFormat('Y-m-d', $data['paid_at'])
             ->toCarbon()
             ->timestamp;
+        return $data;
+
         PettyCash::create($data);
         return redirect()->back()->with('success', 'با موفقیت ذخیره شد.');
     }

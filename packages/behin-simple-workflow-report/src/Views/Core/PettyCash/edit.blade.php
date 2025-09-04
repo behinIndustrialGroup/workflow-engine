@@ -15,7 +15,7 @@
                     <input name="title" class="form-control" value="{{ $pettyCash->title }}" required>
                 </div>
                 <div class="col-md-2">
-                    <input name="amount" class="form-control" value="{{ $pettyCash->amount }}" required>
+                    <input name="amount" class="form-control formatted-digit" value="{{ $pettyCash->amount }}" required>
                 </div>
                 <div class="col-md-3">
                     <input type="text" name="paid_at" class="form-control persian-date" value="{{ Jalalian::forge($pettyCash->paid_at)->format('Y-m-d') }}" required>

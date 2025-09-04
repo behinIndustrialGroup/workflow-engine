@@ -7,6 +7,7 @@ use Carbon\Carbon;
 
 class PettyCash extends Model
 {
+    protected $table = 'wf_entity_petty_cashes';
     protected $fillable = ['title', 'amount', 'paid_at', 'from_account'];
 
     protected $casts = [
