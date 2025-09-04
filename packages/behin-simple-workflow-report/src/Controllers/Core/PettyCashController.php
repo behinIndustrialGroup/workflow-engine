@@ -7,6 +7,7 @@ use Behin\SimpleWorkflowReport\Controllers\Scripts\PettyCashExport;
 use Behin\SimpleWorkflowReport\Models\PettyCash;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use Morilog\Jalali\Jalalian;
 
 class PettyCashController extends Controller
 {
@@ -14,10 +15,18 @@ class PettyCashController extends Controller
     {
         $query = PettyCash::query();
         if ($request->filled('from')) {
-            $query->whereDate('paid_at', '>=', $request->input('from'));
+            $from = Jalalian::fromFormat('Y-m-d', $request->input('from'))
+                ->toCarbon()
+                ->startOfDay()
+                ->timestamp;
+            $query->where('paid_at', '>=', $from);
         }
         if ($request->filled('to')) {
-            $query->whereDate('paid_at', '<=', $request->input('to'));
+            $to = Jalalian::fromFormat('Y-m-d', $request->input('to'))
+                ->toCarbon()
+                ->endOfDay()
+                ->timestamp;
+            $query->where('paid_at', '<=', $to);
         }
         $pettyCashes = $query->orderByDesc('paid_at')->get();
         return view('SimpleWorkflowReportView::Core.PettyCash.index', compact('pettyCashes'));
@@ -28,9 +37,12 @@ class PettyCashController extends Controller
         $data = $request->validate([
             'title' => 'required|string',
             'amount' => 'required|numeric',
-            'paid_at' => 'required|date',
+            'paid_at' => 'required|string',
             'from_account' => 'nullable|string',
         ]);
+        $data['paid_at'] = Jalalian::fromFormat('Y-m-d', $data['paid_at'])
+            ->toCarbon()
+            ->timestamp;
         PettyCash::create($data);
         return redirect()->back()->with('success', 'با موفقیت ذخیره شد.');
     }
@@ -45,9 +57,12 @@ class PettyCashController extends Controller
         $data = $request->validate([
             'title' => 'required|string',
             'amount' => 'required|numeric',
-            'paid_at' => 'required|date',
+            'paid_at' => 'required|string',
             'from_account' => 'nullable|string',
         ]);
+        $data['paid_at'] = Jalalian::fromFormat('Y-m-d', $data['paid_at'])
+            ->toCarbon()
+            ->timestamp;
         $pettyCash->update($data);
         return redirect()->route('simpleWorkflowReport.petty-cash.index')->with('success', 'با موفقیت ذخیره شد.');
     }

@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Morilog\Jalali\Jalalian;
 
 class PettyCashExport implements FromCollection, WithHeadings, WithStyles
 {
@@ -23,16 +24,24 @@ class PettyCashExport implements FromCollection, WithHeadings, WithStyles
     {
         $query = PettyCash::query();
         if ($this->from) {
-            $query->whereDate('paid_at', '>=', $this->from);
+            $from = Jalalian::fromFormat('Y-m-d', $this->from)
+                ->toCarbon()
+                ->startOfDay()
+                ->timestamp;
+            $query->where('paid_at', '>=', $from);
         }
         if ($this->to) {
-            $query->whereDate('paid_at', '<=', $this->to);
+            $to = Jalalian::fromFormat('Y-m-d', $this->to)
+                ->toCarbon()
+                ->endOfDay()
+                ->timestamp;
+            $query->where('paid_at', '<=', $to);
         }
         return $query->select('title','amount','paid_at','from_account')->get()->map(function($item){
             return [
                 $item->title,
                 $item->amount,
-                $item->paid_at->format('Y-m-d'),
+                Jalalian::forge($item->paid_at)->format('Y-m-d'),
                 $item->from_account,
             ];
         });

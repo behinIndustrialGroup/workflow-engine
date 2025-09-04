@@ -1,6 +1,9 @@
 @extends('behin-layouts.app')
 
 @section('title', 'ویرایش تنخواه')
+@php
+    use Morilog\Jalali\Jalalian;
+@endphp
 
 @section('content')
     <div class="card">
@@ -15,7 +18,7 @@
                     <input name="amount" class="form-control" value="{{ $pettyCash->amount }}" required>
                 </div>
                 <div class="col-md-3">
-                    <input type="date" name="paid_at" class="form-control" value="{{ $pettyCash->paid_at->format('Y-m-d') }}" required>
+                    <input type="text" name="paid_at" class="form-control persian-date" value="{{ Jalalian::forge($pettyCash->paid_at)->format('Y-m-d') }}" required>
                 </div>
                 <div class="col-md-3">
                     <input name="from_account" class="form-control" value="{{ $pettyCash->from_account }}">
@@ -26,4 +29,10 @@
             </form>
         </div>
     </div>
+@endsection
+
+@section('script')
+    <script>
+        initial_view();
+    </script>
 @endsection

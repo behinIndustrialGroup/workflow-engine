@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->bigInteger('amount');
-            $table->date('paid_at');
+            $table->unsignedBigInteger('paid_at');
             $table->string('from_account')->nullable();
             $table->timestamps();
         });
