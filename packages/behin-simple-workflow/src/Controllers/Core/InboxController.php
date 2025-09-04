@@ -258,6 +258,19 @@ class InboxController extends Controller
         return view('SimpleWorkflowView::Core.Inbox.history', compact('rows'));
     }
 
+    public static function caseWorkflow($caseNumber){
+        $case = CaseController::getAllByCaseNumber($caseNumber)->first();
+        if(!$case)
+            abort(404);
+
+        $process = $case->process;
+        $history = self::caseHistoryList($caseNumber);
+        $doneTasks = $history->whereIn('status', ['done','doneByOther','canceled'])->pluck('task_id')->unique()->toArray();
+        $currentTasks = $case->whereIs()->pluck('task_id')->toArray();
+
+        return view('SimpleWorkflowView::Core.Inbox.workflow', compact('process','doneTasks','currentTasks','case'));
+    }
+
     public static function caseHistoryList($caseNumber, $limit = null){
         $cases = CaseController::getAllByCaseNumber($caseNumber)->pluck('id');
         $rows= Inbox::whereIn('case_id', $cases)->orderBy('created_at');
