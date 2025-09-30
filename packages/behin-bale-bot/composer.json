@@ -12,5 +12,12 @@
             "BaleBot\\": "src/"
         }
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "BaleBot\\\\BaleBotProvider"
+            ]
+        }
+    },
     "require": {}
 }
