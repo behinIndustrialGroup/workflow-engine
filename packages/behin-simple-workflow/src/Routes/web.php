@@ -86,6 +86,7 @@ Route::name('simpleWorkflow.')->prefix('workflow')->middleware(['web', 'auth'])-
         Route::get('change-status/{inboxId}', [ InboxController::class, 'changeStatus' ])->name('changeStatus');
         Route::get('delete/{inboxId}', [ InboxController::class, 'delete' ])->name('delete');
         Route::get('case-history/{caseNumber?}', [InboxController::class, 'caseHistory'])->name('caseHistoryView');
+        Route::get('case-workflow/{caseNumber?}', [InboxController::class, 'caseWorkflow'])->name('caseWorkflowView');
     });
 
     Route::name('routing.')->prefix('routing')->group(function(){
