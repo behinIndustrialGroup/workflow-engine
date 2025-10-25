@@ -27,13 +27,22 @@ class FormController extends Controller
         $fields = is_array($fields) ? $fields : [];
         $ar = [];
         foreach($fields as $field){
-            $fieldDetails = getFieldDetailsByName($field->fieldName);
-            if($fieldDetails){
-                $ar[] = $field->fieldName;
-            }else{
-                $childAr = self::getFormFields($field->fieldName);
-                $ar = array_merge($ar, $childAr);
+            $fieldDetails = isset($field->id) ? getFieldDetailsById($field->id) : null;
+            if(!$fieldDetails){
+                $childForm = isset($field->id) ? self::getById($field->id) : null;
+                if($childForm){
+                    $childAr = self::getFormFields($field->id);
+                    $ar = array_merge($ar, $childAr);
+                    continue;
+                }
+                $fieldDetails = getFieldDetailsByName($field->fieldName);
+                if(!$fieldDetails){
+                    $childAr = self::getFormFields($field->fieldName);
+                    $ar = array_merge($ar, $childAr);
+                    continue;
+                }
             }
+            $ar[] = $field->fieldName;
         }
         return $ar;
     }
@@ -43,9 +52,15 @@ class FormController extends Controller
         $fields = json_decode($form->content);
         $ar = [];
         foreach($fields as $field){
-            $fieldDetails = getFieldDetailsByName($field->fieldName);
+            $fieldDetails = isset($field->id) ? getFieldDetailsById($field->id) : null;
             if(!$fieldDetails){
                 if($field->readOnly != 'on'){
+                    $childForm = isset($field->id) ? self::getById($field->id) : null;
+                    if($childForm){
+                        $childAr = self::requiredFields($field->id);
+                        $ar = array_merge($ar, $childAr);
+                        continue;
+                    }
                     $formId = $field->fieldName;
                     $childAr = self::requiredFields($formId);
                     $ar = array_merge($ar, $childAr);
@@ -78,10 +93,15 @@ class FormController extends Controller
         $form = self::getById($request->formId);
         $ar = [];
         $index = 0;
-        foreach($request->fieldName as $fieldName){
-            if($fieldName){
+        foreach($request->id as $id){
+            if($id){
+                $fieldDetails = getFieldDetailsById($id);
+                if(!$fieldDetails){
+                    $fieldDetails = getFieldDetailsByName($request->fieldName[$index]);
+                }
                 $ar[] = [
-                    'fieldName' => $fieldName,
+                    'fieldName' => $fieldDetails?->name,
+                    'id' => $fieldDetails?->id,
                     'order' => $request->order[$index] ? $request->order[$index] : $index+1,
                     'required' => isset($request->required[$index]) ? $request->required[$index] : 'off',
                     'readOnly' => isset($request->readOnly[$index]) ? $request->readOnly[$index] : 'off',
@@ -135,14 +155,17 @@ class FormController extends Controller
         foreach($fields as $field){
             $ar[] = [
                 'fieldName' => $field->fieldName,
+                'id' => $field->id ?? null,
                 'order' => $field->order,
                 'required' => $field->required,
                 'readOnly' => $field->readOnly,
                 'class' => $field->class
             ];
         }
+        $newFieldDetails = getFieldDetailsByName($request->fieldName);
         $ar[] = [
-            'fieldName' => $request->fieldName,
+            'fieldName' => $newFieldDetails?->name ?? $request->fieldName,
+            'id' => $newFieldDetails?->id,
             'order' => $request->order,
             'required' => isset($request->required) ? $request->required : 'off',
             'readOnly' => isset($request->readOnly) ? $request->readOnly : 'off',

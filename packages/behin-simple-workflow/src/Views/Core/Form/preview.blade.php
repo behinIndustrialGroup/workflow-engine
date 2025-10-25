@@ -13,14 +13,16 @@
             $fieldId = $field->fieldName;
             $required = $field->required;
             $readOnly = $mode ? $mode : $field->readOnly;
-            $fieldDetails = getFieldDetailsByName($field->fieldName);
+            $fieldDetails = isset($field->id) ? getFieldDetailsById($field->id) : null;
+            if (!$fieldDetails) {
+                $fieldDetails = getFieldDetailsByName($field->fieldName);
+                if(!$fieldDetails){
+                    $childForm = getFormInformation($field->fieldName);
+                }
+            }
             if ($fieldDetails) {
                 $fieldAttributes = json_decode($fieldDetails->attributes);
                 $fieldValue = isset($case) ? $case->getVariable($field->fieldName) : null;
-            } else {
-                if ($field->fieldName != $form->id) {
-                    $childForm = getFormInformation($field->fieldName);
-                }
             }
         @endphp
 
@@ -33,6 +35,7 @@
                     'readOnly' => $readOnly,
                     'required' => $required,
                     'fieldValue' => $fieldValue,
+                    'fieldDbId' => $field->id ?? null,
                 ])
             </div>
         @else

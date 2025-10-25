@@ -70,6 +70,12 @@ if (!function_exists('getFieldDetailsByName')) {
     }
 }
 
+if (!function_exists('getFieldDetailsById')) {
+    function getFieldDetailsById($fieldId) {
+        return FieldController::getById($fieldId);
+    }
+}
+
 if (!function_exists('previewForm')) {
     function previewForm($id) {
         return FormController::preview($id);

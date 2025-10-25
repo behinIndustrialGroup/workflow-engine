@@ -1,13 +1,19 @@
 @php
     $fieldLabel = trans('SimpleWorkflowLang::fields.' . $fieldName);
-    $fieldDetails = getFieldDetailsByName($fieldName);
+    $fieldDetails = isset($fieldDbId) ? getFieldDetailsById($fieldDbId) : null;
+    if (!$fieldDetails) {
+        $fieldDetails = getFieldDetailsByName($fieldName);
+    }
     if ($fieldDetails) {
         $fieldAttributes = json_decode($fieldDetails->attributes);
         if($fieldValue == null){
             $fieldValue = isset($variables) ? $variables->where('key', $fieldName)->first()?->value : null;
         }
     } else {
-        if ($fieldName != $form->id) {
+        if (isset($fieldDbId)) {
+            $childForm = getFormInformation($fieldDbId);
+        }
+        if (!isset($childForm) && $fieldName != $form->id) {
             $childForm = getFormInformation($fieldName);
         }
     }
@@ -21,6 +27,7 @@
             'readOnly' => $readOnly,
             'required' => $required,
             'fieldValue' => $fieldValue,
+            'fieldDbId' => $fieldDbId ?? null,
         ])
     </div>
 @else
